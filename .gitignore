@@ -1,0 +1,73 @@
+## ===================
+## .NET / C# Backend
+## ===================
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Bb]uild/
+[Dd]ebug/
+[Rr]elease/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.pdb
+*.dll
+*.cache
+*.userprefs
+.vs/
+[Tt]est[Rr]esult*/
+[Aa]pp_[Dd]ata/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+*.nupkg
+*.snupkg
+appsettings.*.json
+!appsettings.json
+!appsettings.Development.json
+secrets.json
+*.publishsettings
+publish/
+
+## ===================
+## Angular / Node Frontend
+## ===================
+node_modules/
+dist/
+tmp/
+out-tsc/
+.angular/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.sass-cache/
+connect.lock
+coverage/
+libpeerconnected.log
+testem.log
+.env
+.env.*
+
+## ===================
+## IDE / Editor
+## ===================
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+## ===================
+## Misc
+## ===================
+*.log
+*.tmp
+*.bak
