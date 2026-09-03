@@ -25,7 +25,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHealthChecks("/health");
-app.UseHttpsRedirection();
 app.UseCors("FrontEnd");
 app.UseAuthorization();
 app.MapControllers();
