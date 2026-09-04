@@ -49,6 +49,56 @@ public class IncidentReportServiceTests
     }
 
     [Fact]
+    public async Task UpdateReporterDetailsAsync_WhenEntityExists_UpdatesAndReturnsResponse()
+    {
+        var id = Guid.NewGuid();
+        var createdAt = DateTime.UtcNow.AddDays(-1);
+        var entity = new IncidentReportEntity
+        {
+            Id = id,
+            FullName = "Jane Doe",
+            Mobile = "0412345678",
+            CreatedAtUtc = createdAt,
+            UpdatedAtUtc = createdAt,
+        };
+
+        _repository.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(entity);
+
+        var request = new StartIncidentReportRequest
+        {
+            FullName = "Jane Smith",
+            Mobile = "0498765432",
+        };
+
+        var result = await _sut.UpdateReporterDetailsAsync(id, request, CancellationToken.None);
+
+        Assert.NotNull(result);
+        Assert.Equal(id, result!.Id);
+        Assert.Equal(request.FullName, result.FullName);
+        Assert.Equal(request.Mobile, result.Mobile);
+        Assert.Equal(request.FullName, entity.FullName);
+        Assert.Equal(request.Mobile, entity.Mobile);
+        Assert.True(entity.UpdatedAtUtc > createdAt);
+
+        _repository.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _repository.Verify(r => r.AddAsync(It.IsAny<IncidentReportEntity>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task UpdateReporterDetailsAsync_WhenEntityDoesNotExist_ReturnsNull()
+    {
+        var id = Guid.NewGuid();
+        _repository
+            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((IncidentReportEntity?)null);
+
+        var result = await _sut.UpdateReporterDetailsAsync(id, new StartIncidentReportRequest(), CancellationToken.None);
+
+        Assert.Null(result);
+        _repository.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
     public async Task UpdateIncidentAsync_WhenEntityExists_UpdatesAndReturnsResponse()
     {
         var id = Guid.NewGuid();

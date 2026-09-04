@@ -24,6 +24,23 @@ public class IncidentReportService(IIncidentReportRepository repository) : IInci
         return ToResponse(entity);
     }
 
+    public async Task<IncidentReportResponse?> UpdateReporterDetailsAsync(Guid id, StartIncidentReportRequest request, CancellationToken ct)
+    {
+        var entity = await repository.GetByIdAsync(id, ct);
+        if (entity is null)
+        {
+            return null;
+        }
+
+        entity.FullName = request.FullName;
+        entity.Mobile = request.Mobile;
+        entity.UpdatedAtUtc = DateTime.UtcNow;
+
+        await repository.SaveChangesAsync(ct);
+
+        return ToResponse(entity);
+    }
+
     public async Task<IncidentReportResponse?> UpdateIncidentAsync(Guid id, UpdateIncidentRequest request, CancellationToken ct)
     {
         var entity = await repository.GetByIdAsync(id, ct);

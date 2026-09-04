@@ -64,8 +64,15 @@ export class IncidentReportComponent {
     if (this.currentStep() === 1) {
       await this.saveStep(this.detailsGroup, async () => {
         const { fullName, mobile } = this.detailsGroup.getRawValue();
-        const report = await this.incidentReportService.start({ fullName: fullName!, mobile: mobile! });
-        this.reportId = report.id;
+        if (this.reportId) {
+          await this.incidentReportService.updateReporterDetails(this.reportId, {
+            fullName: fullName!,
+            mobile: mobile!,
+          });
+        } else {
+          const report = await this.incidentReportService.start({ fullName: fullName!, mobile: mobile! });
+          this.reportId = report.id;
+        }
       });
       return;
     }

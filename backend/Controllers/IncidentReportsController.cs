@@ -19,6 +19,16 @@ public class IncidentReportsController(IIncidentReportService incidentReportServ
     }
 
     /// <summary>
+    /// Step 1 — updates the reporter's details on an existing incident report.
+    /// </summary>
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult<IncidentReportResponse>> UpdateReporterDetails(Guid id, StartIncidentReportRequest request, CancellationToken ct)
+    {
+        var report = await incidentReportService.UpdateReporterDetailsAsync(id, request, ct);
+        return report is null ? NotFound() : Ok(report);
+    }
+
+    /// <summary>
     /// Step 2 — saves the incident type and estimated damage.
     /// </summary>
     [HttpPut("{id:guid}/incident")]

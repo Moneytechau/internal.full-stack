@@ -18,6 +18,13 @@ export class IncidentReportService {
     return await firstValueFrom(this.http.post<IncidentReportResponse>(this.baseUrl, request));
   }
 
+  public async updateReporterDetails(
+    id: string,
+    request: StartIncidentReportRequest,
+  ): Promise<IncidentReportResponse> {
+    return await firstValueFrom(this.http.put<IncidentReportResponse>(`${this.baseUrl}/${id}`, request));
+  }
+
   public async updateIncident(id: string, request: UpdateIncidentRequest): Promise<IncidentReportResponse> {
     return await firstValueFrom(this.http.put<IncidentReportResponse>(`${this.baseUrl}/${id}/incident`, request));
   }
