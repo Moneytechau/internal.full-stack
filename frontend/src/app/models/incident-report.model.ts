@@ -1,13 +1,3 @@
-export interface IncidentReport {
-  fullName: string;
-  mobile: string;
-  incidentType: string;
-  estimatedDamage: number;
-  incidentDate: string;
-  location: string;
-  description: string;
-}
-
 export const INCIDENT_TYPES: string[] = [
   'Vehicle accident',
   'Property damage',
@@ -16,3 +6,30 @@ export const INCIDENT_TYPES: string[] = [
   'Water damage',
   'Other',
 ];
+
+export interface StartIncidentReportRequest {
+  fullName: string;
+  mobile: string;
+}
+
+export interface UpdateIncidentRequest {
+  incidentType: string;
+  estimatedDamage: number;
+}
+
+export interface UpdateIncidentDetailsRequest {
+  incidentDate: string;
+  location: string;
+  description: string;
+}
+
+export interface IncidentReportResponse {
+  id: string;
+  fullName: string;
+  mobile: string;
+  incidentType: string | null;
+  estimatedDamage: number | null;
+  incidentDate: string | null;
+  location: string | null;
+  description: string | null;
+}

@@ -29,6 +29,9 @@ appsettings.*.json
 secrets.json
 *.publishsettings
 publish/
+*.db
+*.db-shm
+*.db-wal
 
 ## ===================
 ## Angular / Node Frontend

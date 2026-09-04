@@ -1,8 +1,18 @@
-import { Component, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { INCIDENT_TYPES, IncidentReport } from '../../models/incident-report.model';
+import { Component, inject, signal } from '@angular/core';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { INCIDENT_TYPES } from '../../models/incident-report.model';
+import { IncidentReportService } from '../../services/incident-report.service';
 
 type Step = 1 | 2 | 3;
+
+function notInFuture(control: AbstractControl): ValidationErrors | null {
+  if (!control.value) {
+    return null;
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+  return control.value > today ? { futureDate: true } : null;
+}
 
 @Component({
   selector: 'app-incident-report',
@@ -14,8 +24,13 @@ export class IncidentReportComponent {
   protected readonly incidentTypes = INCIDENT_TYPES;
   protected readonly currentStep = signal<Step>(1);
   protected readonly submitted = signal(false);
+  protected readonly saving = signal(false);
+  protected readonly errorMessage = signal<string | null>(null);
+  protected readonly maxDate = new Date().toISOString().slice(0, 10);
 
   private fb = new FormBuilder();
+  private incidentReportService = inject(IncidentReportService);
+  private reportId: string | null = null;
 
   protected form = this.fb.group({
     details: this.fb.group({
@@ -27,7 +42,7 @@ export class IncidentReportComponent {
       estimatedDamage: [null as number | null, [Validators.required, Validators.min(0)]],
     }),
     specifics: this.fb.group({
-      incidentDate: ['', Validators.required],
+      incidentDate: ['', [Validators.required, notInFuture]],
       location: ['', Validators.required],
       description: ['', [Validators.required, Validators.minLength(10)]],
     }),
@@ -45,42 +60,68 @@ export class IncidentReportComponent {
     return this.form.controls.specifics;
   }
 
-  protected continue(): void {
-    const group = this.currentStep() === 1 ? this.detailsGroup : this.incidentGroup;
+  protected async continue(): Promise<void> {
+    if (this.currentStep() === 1) {
+      await this.saveStep(this.detailsGroup, async () => {
+        const { fullName, mobile } = this.detailsGroup.getRawValue();
+        const report = await this.incidentReportService.start({ fullName: fullName!, mobile: mobile! });
+        this.reportId = report.id;
+      });
+      return;
+    }
 
+    await this.saveStep(this.incidentGroup, async () => {
+      const { incidentType, estimatedDamage } = this.incidentGroup.getRawValue();
+      await this.incidentReportService.updateIncident(this.reportId!, {
+        incidentType: incidentType!,
+        estimatedDamage: estimatedDamage!,
+      });
+    });
+  }
+
+  protected back(): void {
+    this.errorMessage.set(null);
+    this.currentStep.set((this.currentStep() - 1) as Step);
+  }
+
+  protected async submit(): Promise<void> {
+    await this.saveStep(this.specificsGroup, async () => {
+      const { incidentDate, location, description } = this.specificsGroup.getRawValue();
+      await this.incidentReportService.updateDetails(this.reportId!, {
+        incidentDate: incidentDate!,
+        location: location!,
+        description: description!,
+      });
+      this.submitted.set(true);
+    });
+  }
+
+  protected startNewReport(): void {
+    this.form.reset();
+    this.reportId = null;
+    this.currentStep.set(1);
+    this.submitted.set(false);
+    this.errorMessage.set(null);
+  }
+
+  private async saveStep(group: AbstractControl, save: () => Promise<void>): Promise<void> {
     if (group.invalid) {
       group.markAllAsTouched();
       return;
     }
 
-    this.currentStep.set((this.currentStep() + 1) as Step);
-  }
+    this.saving.set(true);
+    this.errorMessage.set(null);
 
-  protected back(): void {
-    this.currentStep.set((this.currentStep() - 1) as Step);
-  }
-
-  protected submit(): void {
-    if (this.specificsGroup.invalid) {
-      this.specificsGroup.markAllAsTouched();
-      return;
+    try {
+      await save();
+      if (this.currentStep() < 3) {
+        this.currentStep.set((this.currentStep() + 1) as Step);
+      }
+    } catch {
+      this.errorMessage.set("Something went wrong saving your report. Please try again.");
+    } finally {
+      this.saving.set(false);
     }
-
-    const report: IncidentReport = {
-      ...this.detailsGroup.getRawValue(),
-      ...this.incidentGroup.getRawValue(),
-      ...this.specificsGroup.getRawValue(),
-    } as IncidentReport;
-
-    // Backend submission isn't wired up yet — this is where the API call will go.
-    console.log('Incident report ready to submit', report);
-
-    this.submitted.set(true);
-  }
-
-  protected startNewReport(): void {
-    this.form.reset();
-    this.currentStep.set(1);
-    this.submitted.set(false);
   }
 }

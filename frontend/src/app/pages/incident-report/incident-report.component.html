@@ -8,13 +8,6 @@
       </svg>
       <span class="brand__name">Meridian Insurance</span>
     </div>
-    <div class="no-account-pill">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
-        <circle cx="12" cy="12" r="9" stroke-linecap="round" />
-        <path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
-      <span>No account needed</span>
-    </div>
   </header>
 
   <main class="content">
@@ -73,9 +66,15 @@
               <p class="field-hint">We'll only use this to follow up on your claim.</p>
             }
 
-            <button type="button" class="btn btn--primary" (click)="continue()">
-              Continue
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            @if (errorMessage()) {
+              <p class="field-error">{{ errorMessage() }}</p>
+            }
+
+            <button type="button" class="btn btn--primary" [disabled]="saving()" (click)="continue()">
+              {{ saving() ? 'Saving...' : 'Continue' }}
+              @if (!saving()) {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              }
             </button>
           </div>
         }
@@ -106,11 +105,17 @@
               <p class="field-hint">A rough figure is fine — we'll confirm the exact amount later.</p>
             }
 
+            @if (errorMessage()) {
+              <p class="field-error">{{ errorMessage() }}</p>
+            }
+
             <div class="btn-row">
-              <button type="button" class="btn btn--secondary" (click)="back()">Back</button>
-              <button type="button" class="btn btn--primary btn--grow" (click)="continue()">
-                Continue
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              <button type="button" class="btn btn--secondary" [disabled]="saving()" (click)="back()">Back</button>
+              <button type="button" class="btn btn--primary btn--grow" [disabled]="saving()" (click)="continue()">
+                {{ saving() ? 'Saving...' : 'Continue' }}
+                @if (!saving()) {
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                }
               </button>
             </div>
           </div>
@@ -123,14 +128,16 @@
             <div class="field-row">
               <div>
                 <label for="incidentDate">Date of incident</label>
-                <input id="incidentDate" type="date" formControlName="incidentDate" />
+                <input id="incidentDate" type="date" formControlName="incidentDate" [max]="maxDate" />
               </div>
               <div>
                 <label for="location">Location</label>
                 <input id="location" type="text" formControlName="location" placeholder="Suburb or address" />
               </div>
             </div>
-            @if ((specificsGroup.controls.incidentDate.invalid && specificsGroup.controls.incidentDate.touched) ||
+            @if (specificsGroup.controls.incidentDate.touched && specificsGroup.controls.incidentDate.errors?.['futureDate']) {
+              <p class="field-error">The incident date can't be in the future.</p>
+            } @else if ((specificsGroup.controls.incidentDate.invalid && specificsGroup.controls.incidentDate.touched) ||
                  (specificsGroup.controls.location.invalid && specificsGroup.controls.location.touched)) {
               <p class="field-error">Enter the date and location of the incident.</p>
             }
@@ -141,9 +148,15 @@
               <p class="field-error">Add a few more details (at least 10 characters).</p>
             }
 
+            @if (errorMessage()) {
+              <p class="field-error">{{ errorMessage() }}</p>
+            }
+
             <div class="btn-row">
-              <button type="button" class="btn btn--secondary" (click)="back()">Back</button>
-              <button type="button" class="btn btn--primary btn--grow" (click)="submit()">Submit report</button>
+              <button type="button" class="btn btn--secondary" [disabled]="saving()" (click)="back()">Back</button>
+              <button type="button" class="btn btn--primary btn--grow" [disabled]="saving()" (click)="submit()">
+                {{ saving() ? 'Submitting...' : 'Submit report' }}
+              </button>
             </div>
           </div>
         }
@@ -156,8 +169,8 @@
     } @else {
       <div class="card card--confirmation">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="confirmation-icon"><circle cx="12" cy="12" r="10" /><path d="M8 12.5l2.5 2.5L16 9.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-        <h2>Thanks — your report is ready</h2>
-        <p>This is a preview build, so nothing has been submitted yet. Once the backend is connected, submitting here will send your report through.</p>
+        <h2>Thanks — your report has been submitted</h2>
+        <p>We've received your incident report and will be in touch on the mobile number you provided if we need anything else.</p>
         <button type="button" class="btn btn--primary" (click)="startNewReport()">Start a new report</button>
       </div>
     }
