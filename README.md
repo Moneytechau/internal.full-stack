@@ -1,17 +1,74 @@
-# Internal Full Stack
+# Incident Reporting
 
-Shell application: a single ASP.NET Core 8 Web API + an Angular standalone-component frontend.
+A three-step incident reporting wizard: an Angular frontend talking to an ASP.NET Core Web API backed by SQLite. A reporter's details, incident details, and specifics are saved progressively as they move through the wizard, so a report already exists in the database from step 1 onward.
 
-## Running locally
+## Projects
 
-Backend (http://localhost:5227):
+| Project | Type | Purpose |
+|---|---|---|
+| `backend/` | ASP.NET Core Web API (.NET 8) | Exposes the incident report endpoints (`IncidentReportsController`), backed by EF Core + SQLite (`AppDbContext`). |
+| `backend.UnitTests/` | xUnit | Unit tests for `IncidentReportService`, with `IIncidentReportRepository` mocked via Moq. No external dependencies. |
+| `backend.IntegrationTests/` | xUnit | Exercises the real, already-running API over HTTP and reads the SQLite database file directly to verify persistence. |
+| `frontend/` | Angular | The reporting wizard UI (`IncidentReportComponent`). |
+| `functionalTests/` | xUnit + Playwright | Drives a real browser against the already-running frontend for an end-to-end reporting flow. |
+
+## Prerequisites
+
+- .NET 8 SDK
+- Node.js + npm
+- Playwright's Chromium binaries for `functionalTests` (one-time setup, after the first build):
+  ```
+  pwsh functionalTests/bin/Debug/net8.0/playwright.ps1 install chromium
+  ```
+
+## Running the app
+
+**Backend** (from `backend/`):
 ```
-cd backend
-dotnet run --urls http://localhost:5227
+dotnet run
+```
+The frontend's dev config (`frontend/src/environments/environment.development.ts`) expects the API at `http://localhost:5227`.
+
+**Frontend** (from `frontend/`):
+```
+npm install
+ng serve
+```
+Open `http://localhost:4200`.
+
+## Testing
+
+### backend.UnitTests
+
+No setup required — pure unit tests with the repository mocked.
+```
+dotnet test backend.UnitTests
 ```
 
-Frontend (http://localhost:4200):
+### backend.IntegrationTests
+
+Start the backend first (`dotnet run` in `backend/`), then:
+```
+dotnet test backend.IntegrationTests
+```
+Tests call the real API over HTTP and also open the SQLite file directly (via `Microsoft.Data.Sqlite`) to verify what was persisted. If the backend isn't running on the defaults, override:
+- `INTEGRATION_TESTS_API_BASE_URL` (default `http://localhost:5227`)
+- `INTEGRATION_TESTS_DB_PATH` (default `backend/incidents.db`)
+
+### frontend
+
 ```
 cd frontend
-npm start
+npx ng test --watch=false --browsers=ChromeHeadless
 ```
+(Omit the flags to run interactively in a watched browser via `ng test`.)
+
+### functionalTests
+
+Start both the backend and the frontend first (see above), then:
+```
+dotnet test functionalTests
+```
+This runs a single end-to-end test that completes the incident report wizard in a real (headless by default) Chromium browser and asserts the confirmation screen appears. Override if needed:
+- `FUNCTIONAL_TESTS_FRONTEND_BASE_URL` (default `http://localhost:4200`)
+- `FUNCTIONAL_TESTS_HEADLESS=false` to watch it run

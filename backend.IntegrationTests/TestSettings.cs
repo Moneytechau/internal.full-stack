@@ -8,7 +8,7 @@ namespace Backend.IntegrationTests;
 public static class TestSettings
 {
     public static Uri ApiBaseUrl { get; } = new(
-        Environment.GetEnvironmentVariable("INTEGRATION_TESTS_API_BASE_URL") ?? "http://localhost:5203");
+        Environment.GetEnvironmentVariable("INTEGRATION_TESTS_API_BASE_URL") ?? "http://localhost:5227");
 
     public static string DatabasePath { get; } =
         Environment.GetEnvironmentVariable("INTEGRATION_TESTS_DB_PATH")
