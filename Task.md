@@ -11,6 +11,10 @@ During the test will share your screen as you work on completing the task. Durin
 - use AI tools to investigate the code or implement the code
 - google for solutions
 
+You should come to the test prepared to write code with by hand or AI assisted.
+
+We recommend using vscode, although Visual Studio or Rider should work fine.
+
 # Structure of the test
 
 There are 3 parts to the test:

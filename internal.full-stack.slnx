@@ -1,0 +1,47 @@
+<Solution>
+  <Project Path="backend.IntegrationTests/backend.IntegrationTests.csproj" />
+  <Project Path="backend.UnitTests/backend.UnitTests.csproj" />
+  <Project Path="backend/backend.csproj" />
+  <Project Path="functionalTests/functionalTests.csproj" />
+  <Folder Name="/frontend/">
+    <File Path="frontend/README.md" />
+    <File Path="frontend/angular.json" />
+    <File Path="frontend/package.json" />
+    <File Path="frontend/tsconfig.json" />
+    <File Path="frontend/tsconfig.app.json" />
+    <File Path="frontend/tsconfig.spec.json" />
+    <Folder Name="/frontend/public/">
+      <File Path="frontend/public/favicon.ico" />
+    </Folder>
+    <Folder Name="/frontend/src/">
+      <File Path="frontend/src/index.html" />
+      <File Path="frontend/src/main.ts" />
+      <File Path="frontend/src/styles.scss" />
+      <Folder Name="/frontend/src/app/">
+        <File Path="frontend/src/app/app.component.html" />
+        <File Path="frontend/src/app/app.component.scss" />
+        <File Path="frontend/src/app/app.component.spec.ts" />
+        <File Path="frontend/src/app/app.component.ts" />
+        <File Path="frontend/src/app/app.config.ts" />
+        <File Path="frontend/src/app/app.routes.ts" />
+        <Folder Name="/frontend/src/app/models/">
+          <File Path="frontend/src/app/models/incident-report.model.ts" />
+        </Folder>
+        <Folder Name="/frontend/src/app/pages/incident-report/">
+          <File Path="frontend/src/app/pages/incident-report/incident-report.component.html" />
+          <File Path="frontend/src/app/pages/incident-report/incident-report.component.scss" />
+          <File Path="frontend/src/app/pages/incident-report/incident-report.component.spec.ts" />
+          <File Path="frontend/src/app/pages/incident-report/incident-report.component.ts" />
+        </Folder>
+        <Folder Name="/frontend/src/app/services/">
+          <File Path="frontend/src/app/services/incident-report.service.spec.ts" />
+          <File Path="frontend/src/app/services/incident-report.service.ts" />
+        </Folder>
+      </Folder>
+      <Folder Name="/frontend/src/environments/">
+        <File Path="frontend/src/environments/environment.development.ts" />
+        <File Path="frontend/src/environments/environment.ts" />
+      </Folder>
+    </Folder>
+  </Folder>
+</Solution>

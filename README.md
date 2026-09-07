@@ -12,6 +12,8 @@ A three-step incident reporting wizard: an Angular frontend talking to an ASP.NE
 | `frontend/` | Angular | The reporting wizard UI (`IncidentReportComponent`). |
 | `functionalTests/` | xUnit + Playwright | Drives a real browser against the already-running frontend for an end-to-end reporting flow. |
 
+`internal.full-stack.slnx` ties together the four .NET projects (`backend`, `backend.UnitTests`, `backend.IntegrationTests`, `functionalTests`) — open it in an IDE, or run `dotnet build internal.full-stack.slnx` / `dotnet test internal.full-stack.slnx` to build or test all of them at once. `frontend/` isn't part of it, since it's an Angular project, not .NET.
+
 ## Prerequisites
 
 - .NET 8 SDK
