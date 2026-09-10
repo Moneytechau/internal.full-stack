@@ -17,33 +17,9 @@
     </div>
 
     @if (!submitted()) {
-      <div class="stepper">
-        <div class="stepper__row">
-          <div class="step-circle" [class.step-circle--done]="currentStep() > 1" [class.step-circle--current]="currentStep() === 1">
-            @if (currentStep() > 1) {
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" /></svg>
-            } @else {
-              1
-            }
-          </div>
-          <div class="step-connector" [class.step-connector--done]="currentStep() > 1"></div>
-
-          <div class="step-circle" [class.step-circle--done]="currentStep() > 2" [class.step-circle--current]="currentStep() === 2">
-            @if (currentStep() > 2) {
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" /></svg>
-            } @else {
-              2
-            }
-          </div>
-          <div class="step-connector" [class.step-connector--done]="currentStep() > 2"></div>
-
-          <div class="step-circle" [class.step-circle--current]="currentStep() === 3">3</div>
-        </div>
-        <div class="stepper__labels">
-          <span [class.step-label--active]="currentStep() === 1">Your details</span>
-          <span [class.step-label--active]="currentStep() === 2">What happened</span>
-          <span [class.step-label--active]="currentStep() === 3">The details</span>
-        </div>
+      <div class="status">
+        <span class="status__step">Step {{ currentStep() }} of 3</span>
+        <span class="status__label">{{ stepLabels[currentStep() - 1] }}</span>
       </div>
 
       <div class="card" [formGroup]="form">

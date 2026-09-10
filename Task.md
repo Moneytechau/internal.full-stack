@@ -27,7 +27,6 @@ There are 3 parts to the test:
 Your task is to add an additional step into the existing application. The application is currently a 3 step process to register an incident. We want to add an additional step that provides a summary of the incident that is being reported.
 
 Requirements:
-- The page must display all the current details collected in the 3 previous steps
-- We want to add the additional option of selecting a currency for the incident damage in the one of the following currencies (AUD, USD, GBP)
-- On the summary page, if the currency used for the incident damage is not in AUD, display the incident damage in AUD. Use the https://frankfurter.dev/ API to retrieve the exchange rate at the time of the accident.
+- We want to add the additional option of selecting a currency for the incident damage in the one of the following currencies (AUD, USD, GBP). The currency should be collected on step 2 with the estimated damage.
+- We want to add a 4th step which is a summary page. On the summary page it should display all of the information collected. On the summary page it should display the estimated damage in AUD. Use the https://frankfurter.dev/ API to retrieve the exchange rate at the time of the accident, if the estimated damage was in USD or GBP.
 - Ensure that the final incident damage value in AUD is saved, along with the originally reported value and currency.

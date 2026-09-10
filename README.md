@@ -34,7 +34,7 @@ The frontend's dev config (`frontend/src/environments/environment.development.ts
 **Frontend** (from `frontend/`):
 ```
 npm install
-ng serve
+npx ng serve
 ```
 Open `http://localhost:4200`.
 

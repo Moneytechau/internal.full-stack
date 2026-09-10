@@ -22,6 +22,7 @@ function notInFuture(control: AbstractControl): ValidationErrors | null {
 })
 export class IncidentReportComponent {
   protected readonly incidentTypes = INCIDENT_TYPES;
+  protected readonly stepLabels = ['Your details', 'What happened', 'The details'];
   protected readonly currentStep = signal<Step>(1);
   protected readonly submitted = signal(false);
   protected readonly saving = signal(false);
